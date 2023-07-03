@@ -1,5 +1,5 @@
-# 1. `gem install icalendar``
-# 2. Get the Public Address in iCal Format from Google Calendar: https://support.google.com/calendar/answer/37083#link
+# 1. `gem install icalendar`
+# 2. Get the "Secret adddress in iCal format" from Google Calendar: https://support.google.com/calendar/answer/37083#link
 # 3. Open that URL in a browser to download the .ics file
 # 3. Modify the constants below
 # 4. Run `ruby rehearsals.rb`
@@ -7,15 +7,14 @@
 require "icalendar"
 require "csv"
 
-
-START_FROM = DateTime.new(2022, 4, 23)
+START_FROM = DateTime.new(2023, 4, 25)
 CAL_PATH = File.expand_path("~/Downloads/basic.ics")
 
 def format_time(time)
   time.in_time_zone("America/New_York").strftime("%m/%d/%Y %H:%M:%S")
 end
 
-# Open a file or pass a string to the parser
+# # Open a file or pass a string to the parser
 cal_file = File.open(CAL_PATH)
 
 # Parser returns an array of calendars because a single file
