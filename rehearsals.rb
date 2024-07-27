@@ -28,7 +28,7 @@ CSV.open("rehearsals.csv", "w") do |csv|
 
   # Now you can access the cal object in just the same way I created it
   cal.events.each do |event|
-    if event.dtstart >= START_FROM and event.summary.include? "Artichoke"
+    if event.dtstart >= START_FROM and event.dtstart < Time.now and event.summary.include? "Artichoke"
       row = [
         event.summary,
         event.location,
