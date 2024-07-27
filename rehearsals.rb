@@ -9,14 +9,25 @@ require "csv"
 
 START_FROM = DateTime.new(2023, 10, 8)
 CAL_PATH = File.expand_path("~/Downloads/basic.ics")
+MY_EMAIL = "aidan.feldman@gmail.com"
 
-def is_eligible(event)
+def relevant?(event)
+  event.summary.include? "Artichoke" or
+    event.summary.include? "ADC" or
+    # event organizer empty in some cases
+    event.organizer&.to.eql? "artichokedancecompany@gmail.com"
+end
+
+def attending?(event)
+  me = event.attendee.find { |attendee| attendee.to.eql? MY_EMAIL }
+  !me or me.ical_params["partstat"].first != "DECLINED"
+end
+
+def eligible?(event)
   event.dtstart >= START_FROM and
     event.dtstart < Time.now and
-    (event.summary.include? "Artichoke" or
-      event.summary.include? "ADC" or
-      # event organizer empty in some cases?
-      event.organizer&.to.eql? "artichokedancecompany@gmail.com")
+    relevant?(event) and
+    attending?(event)
 end
 
 def duration_in_hours(event)
@@ -41,7 +52,7 @@ CSV.open("rehearsals.csv", "w") do |csv|
 
   # Now you can access the cal object in just the same way I created it
   cal.events.each do |event|
-    if is_eligible(event)
+    if eligible?(event)
       row = [
         event.summary,
         event.location,
