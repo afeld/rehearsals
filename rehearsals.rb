@@ -7,8 +7,13 @@
 require "icalendar"
 require "csv"
 
-START_FROM = DateTime.new(2023, 4, 25)
+START_FROM = DateTime.new(2023, 10, 8)
 CAL_PATH = File.expand_path("~/Downloads/basic.ics")
+
+def duration_in_hours(event)
+  duration_in_secs = event.dtend - event.dtstart
+  duration_in_secs / 60 / 60
+end
 
 def format_time(time)
   time.in_time_zone("America/New_York").strftime("%m/%d/%Y %H:%M:%S")
@@ -24,7 +29,7 @@ cal = cals.first
 
 
 CSV.open("rehearsals.csv", "w") do |csv|
-  csv << ["Name", "Location", "Start", "End"]
+  csv << ["Name", "Location", "Start", "End", "Hours"]
 
   # Now you can access the cal object in just the same way I created it
   cal.events.each do |event|
@@ -33,7 +38,8 @@ CSV.open("rehearsals.csv", "w") do |csv|
         event.summary,
         event.location,
         format_time(event.dtstart),
-        format_time(event.dtend)
+        format_time(event.dtend),
+        duration_in_hours(event).to_s
       ]
       puts row
       csv << row
