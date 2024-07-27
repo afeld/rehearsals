@@ -20,7 +20,19 @@ end
 
 def attending?(event)
   me = event.attendee.find { |attendee| attendee.to.eql? MY_EMAIL }
-  !me or me.ical_params["partstat"].first != "DECLINED"
+
+  if !me
+    return false
+  end
+
+  rsvps = me.ical_params["partstat"]
+
+  # sanity checking
+  if rsvps != ["ACCEPTED"] && rsvps != ["DECLINED"]
+    raise "RSVP: #{rsvps}"
+  end
+
+  rsvps.first == "ACCEPTED"
 end
 
 def eligible?(event)
