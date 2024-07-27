@@ -10,6 +10,12 @@ require "csv"
 START_FROM = DateTime.new(2023, 10, 8)
 CAL_PATH = File.expand_path("~/Downloads/basic.ics")
 
+def is_eligible(event)
+  event.dtstart >= START_FROM and
+    event.dtstart < Time.now and
+    event.summary.include? "Artichoke"
+end
+
 def duration_in_hours(event)
   duration_in_secs = event.dtend - event.dtstart
   duration_in_secs / 60 / 60
@@ -27,13 +33,12 @@ cal_file = File.open(CAL_PATH)
 cals = Icalendar::Calendar.parse(cal_file)
 cal = cals.first
 
-
 CSV.open("rehearsals.csv", "w") do |csv|
   csv << ["Name", "Location", "Start", "End", "Hours"]
 
   # Now you can access the cal object in just the same way I created it
   cal.events.each do |event|
-    if event.dtstart >= START_FROM and event.dtstart < Time.now and event.summary.include? "Artichoke"
+    if is_eligible(event)
       row = [
         event.summary,
         event.location,
