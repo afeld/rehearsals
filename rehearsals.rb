@@ -13,7 +13,10 @@ CAL_PATH = File.expand_path("~/Downloads/basic.ics")
 def is_eligible(event)
   event.dtstart >= START_FROM and
     event.dtstart < Time.now and
-    event.summary.include? "Artichoke"
+    (event.summary.include? "Artichoke" or
+      event.summary.include? "ADC" or
+      # event organizer empty in some cases?
+      event.organizer&.to.eql? "artichokedancecompany@gmail.com")
 end
 
 def duration_in_hours(event)
