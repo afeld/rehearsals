@@ -1,3 +1,4 @@
+require "active_support"
 require "icalendar"
 require "csv"
 
@@ -45,6 +46,9 @@ end
 def format_time(time)
   time.in_time_zone("America/New_York").strftime("%m/%d/%Y %H:%M:%S")
 end
+
+# gets set to US-ASCII when run through rdbg
+Encoding.default_external = "UTF-8"
 
 cal_file = File.open(CAL_PATH)
 cals = Icalendar::Calendar.parse(cal_file)
