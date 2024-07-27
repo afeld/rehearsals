@@ -1,9 +1,3 @@
-# 1. `gem install icalendar`
-# 2. Get the "Secret adddress in iCal format" from Google Calendar: https://support.google.com/calendar/answer/37083#link
-# 3. Open that URL in a browser to download the .ics file
-# 3. Modify the constants below
-# 4. Run `ruby rehearsals.rb`
-
 require "icalendar"
 require "csv"
 
