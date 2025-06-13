@@ -56,21 +56,23 @@ def expand_recurring_events(events)
       expanded_events << event
     else
       # Recurring event - expand occurrences
-      rrule_string = event.rrule.first.value_ical
-      start_time = event.dtstart.to_time
-      end_time = event.dtend.to_time
-      duration = end_time - start_time
+      event.rrule.each do |rrule|
+        rrule_string = rrule.value_ical
+        start_time = event.dtstart.to_time
+        end_time = event.dtend.to_time
+        duration = end_time - start_time
 
-      # Parse the rrule and generate occurrences
-      rrule = RRule.parse(rrule_string, dtstart: start_time)
-      occurrences = rrule.between(start_time, Time.now)
+        # Parse the rrule and generate occurrences
+        rrule = RRule.parse(rrule_string, dtstart: start_time)
+        occurrences = rrule.between(start_time, Time.now)
 
-      occurrences.each do |occurrence_start|
-        # Create a new event for each occurrence
-        occurrence_event = event.dup
-        occurrence_event.dtstart = occurrence_start
-        occurrence_event.dtend = occurrence_start + duration
-        expanded_events << occurrence_event
+        occurrences.each do |occurrence_start|
+          # Create a new event for each occurrence
+          occurrence_event = event.dup
+          occurrence_event.dtstart = occurrence_start
+          occurrence_event.dtend = occurrence_start + duration
+          expanded_events << occurrence_event
+        end
       end
     end
   end
