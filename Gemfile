@@ -2,7 +2,5 @@
 
 source "https://rubygems.org"
 
-gem "activesupport"
 gem "csv"
 gem "icalendar"
-gem "standard"
