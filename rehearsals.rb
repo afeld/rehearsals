@@ -2,9 +2,9 @@ require "active_support"
 require "icalendar"
 require "csv"
 
-START_FROM = DateTime.new(2023, 10, 8)
-CAL_PATH = File.expand_path("~/Downloads/basic.ics")
+START_FROM = DateTime.new(2024, 7, 28)
 MY_EMAIL = "aidan.feldman@gmail.com"
+CAL_PATH = File.expand_path("~/Downloads/Personal_#{MY_EMAIL}.ics")
 
 def relevant?(event)
   event.summary.include? "Artichoke" or
