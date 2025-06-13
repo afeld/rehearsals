@@ -47,6 +47,7 @@ def format_time(time)
   time.in_time_zone("America/New_York").strftime("%m/%d/%Y %H:%M:%S")
 end
 
+# https://github.com/icalendar/icalendar/issues/309
 def expand_recurring_events(events)
   expanded_events = []
 
@@ -100,7 +101,7 @@ CSV.open("rehearsals.csv", "w") do |csv|
         event.location,
         format_time(event.dtstart),
         format_time(event.dtend),
-        "%.1f" % duration_in_hours(event)
+        "%.2f" % duration_in_hours(event)
       ]
       puts row
       csv << row
