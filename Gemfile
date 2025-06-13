@@ -4,4 +4,5 @@ source "https://rubygems.org"
 
 gem "csv"
 gem "icalendar"
-gem "rrule"
+gem "icalendar-recurrence"
+gem "standard"

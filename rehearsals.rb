@@ -1,8 +1,9 @@
 require "csv"
 require "icalendar"
-require "rrule"
+require "icalendar/recurrence"
 
-START_FROM = DateTime.new(2024, 7, 28)
+ZONE = TZInfo::Timezone.get("America/New_York")
+START_FROM = Time.new(2024, 7, 28, in: ZONE)
 MY_EMAIL = "aidan.feldman@gmail.com"
 CAL_PATH = File.expand_path("~/Downloads/Personal_#{MY_EMAIL}.ics")
 
@@ -32,8 +33,10 @@ def attending?(event)
 end
 
 def eligible?(event)
-  event.dtstart >= START_FROM and
-    event.dtstart < Time.now and
+  start_time = event.start_time
+
+  start_time >= START_FROM and
+    start_time <= Time.now and
     relevant?(event) and
     attending?(event)
 end
@@ -44,41 +47,7 @@ def duration_in_hours(event)
 end
 
 def format_time(time)
-  time.in_time_zone("America/New_York").strftime("%m/%d/%Y %H:%M:%S")
-end
-
-# https://github.com/icalendar/icalendar/issues/309
-def expand_recurring_events(events)
-  expanded_events = []
-
-  events.each do |event|
-    if event.rrule.empty?
-      # Non-recurring event
-      expanded_events << event
-    else
-      # Recurring event - expand occurrences
-      event.rrule.each do |rrule|
-        rrule_string = rrule.value_ical
-        start_time = event.dtstart.to_time
-        end_time = event.dtend.to_time
-        duration = end_time - start_time
-
-        # Parse the rrule and generate occurrences
-        rrule = RRule.parse(rrule_string, dtstart: start_time)
-        occurrences = rrule.between(start_time, Time.now)
-
-        occurrences.each do |occurrence_start|
-          # Create a new event for each occurrence
-          occurrence_event = event.dup
-          occurrence_event.dtstart = occurrence_start
-          occurrence_event.dtend = occurrence_start + duration
-          expanded_events << occurrence_event
-        end
-      end
-    end
-  end
-
-  expanded_events
+  time.getlocal(ZONE).strftime("%m/%d/%Y %H:%M:%S")
 end
 
 # gets set to US-ASCII when run through rdbg
@@ -91,16 +60,17 @@ cal = cals.first
 CSV.open("rehearsals.csv", "w") do |csv|
   csv << ["Name", "Location", "Start", "End", "Hours"]
 
-  events = cal.events.sort_by(&:dtstart)
-  expanded_events = expand_recurring_events(events)
+  events = cal.events.sort_by(&:start_time)
+  events = events.select { |e| eligible?(e) }
 
-  expanded_events.each do |event|
-    if eligible?(event)
+  events.each do |event|
+    occurrences = event.occurrences_between(event.start_time, Time.now)
+    occurrences.each do |occurrence|
       row = [
         event.summary,
         event.location,
-        format_time(event.dtstart),
-        format_time(event.dtend),
+        format_time(occurrence.start_time),
+        format_time(occurrence.end_time),
         "%.2f" % duration_in_hours(event)
       ]
       puts row
