@@ -39,7 +39,7 @@ def eligible?(event)
 end
 
 def duration_in_hours(event)
-  duration_in_secs = event.dtend - event.dtstart
+  duration_in_secs = event.dtend.to_time - event.dtstart.to_time
   duration_in_secs / 60 / 60
 end
 
@@ -65,7 +65,7 @@ CSV.open("rehearsals.csv", "w") do |csv|
         event.location,
         format_time(event.dtstart),
         format_time(event.dtend),
-        duration_in_hours(event).to_s
+        "%.1f" % duration_in_hours(event)
       ]
       puts row
       csv << row
