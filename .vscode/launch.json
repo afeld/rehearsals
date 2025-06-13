@@ -10,7 +10,7 @@
       "request": "launch",
       "script": "${file}",
       "args": [],
-      "askParameters": true
+      "askParameters": false
     }
   ]
 }
