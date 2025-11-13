@@ -6,3 +6,5 @@
    bundle install
    bundle exec ruby rehearsals.rb
    ```
+
+1. Import `rehearsals.csv` into a spreadsheet.

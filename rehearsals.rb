@@ -3,9 +3,9 @@ require "icalendar"
 require "icalendar/recurrence"
 
 ZONE = TZInfo::Timezone.get("America/New_York")
-START_FROM = Time.new(2024, 7, 28, in: ZONE)
+START_FROM = Time.new(2025, 8, 16, in: ZONE)
 MY_EMAIL = "aidan.feldman@gmail.com"
-CAL_PATH = File.expand_path("~/Downloads/Personal_#{MY_EMAIL}.ics")
+CAL_PATH = File.expand_path("~/Downloads/aidan.feldman@gmail.com.ical/Personal_#{MY_EMAIL}.ics")
 
 def relevant?(event)
   event.summary.include? "Artichoke" or
