@@ -15,7 +15,11 @@ def relevant?(event)
 end
 
 def attending?(event)
-  me = event.attendee.find { |attendee| attendee.to.eql? MY_EMAIL }
+  me = event.attendee.find do |attendee|
+    email = attendee.to.to_s.downcase
+    email = email.sub(/\Amailto:/, "")
+    email == MY_EMAIL.downcase
+  end
 
   if !me
     # assuming it was an event I created
